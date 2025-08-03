@@ -274,6 +274,18 @@ Sources: Claude and Anthropic pronoun discussions; ChatGPT user/study insights; 
         const typingSpeed = 20;
         const delayBetweenLines = 1000;
         let currentLineIndex = 0;
+        let isAutoScrolling = true; // Flag to control auto-scrolling
+
+        // Stop auto-scrolling on manual scroll
+        terminal.addEventListener('scroll', () => {
+            // If scrolled up from the bottom, disable auto-scroll
+            if (terminal.scrollTop + terminal.clientHeight < terminal.scrollHeight - 20) {
+                isAutoScrolling = false;
+            } else {
+                // If scrolled back to the bottom, re-enable it
+                isAutoScrolling = true;
+            }
+        });
 
         // Λειτουργία για το εφέ γραφομηχανής
         function typeLine(lineElement, text, callback) {
@@ -296,7 +308,9 @@ Sources: Claude and Anthropic pronoun discussions; ChatGPT user/study insights; 
 
         // Λειτουργία για την αυτόματη κύλιση
         function autoScroll() {
-            terminal.scrollTop = terminal.scrollHeight;
+            if (isAutoScrolling) {
+                terminal.scrollTop = terminal.scrollHeight;
+            }
         }
 
         // Κύρια λειτουργία που τρέχει τον διάλογο
